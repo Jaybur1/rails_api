@@ -7,7 +7,7 @@ FactoryBot.define do
 		end
 		trait :book2 do
 			author_id {2}
-			title {'A Story of the Noseless Persone'}
+			title {'A Story of the Noseless Person'}
 		end
 	end
 end

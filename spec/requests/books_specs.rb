@@ -13,6 +13,53 @@ describe "Books API", type: :request do
 
         expect(response).to have_http_status(:success)
         expect(response_body.size).to eq(2)
+        expect(response_body).to eq([
+          {
+            "id" => 1,
+            "title" => 'Summer Camp at Azkaban',
+            "author_name" => "Jerry The Mouse",
+            "author_initials" => "J.T",
+            "author_age" => 120
+          },{
+            "id" => 2,
+            "title" => 'A Story of the Noseless Person',
+            "author_name" => 'Tom The Cat',
+            "author_initials" => 'T.T',
+            "author_age" => 122
+          }
+        ])
+    end
+
+    it 'returns a subset of books based on limit' do
+      get '/api/v1/books', params: {limit: 1}
+
+      expect(response).to have_http_status(:success)
+      expect(response_body.size).to eq(1)
+      expect(response_body).to eq([
+        {
+          "id" => 1,
+          "title" => 'Summer Camp at Azkaban',
+          "author_name" => "Jerry The Mouse",
+          "author_initials" => "J.T",
+          "author_age" => 120
+        }
+      ])
+    end
+
+    it 'returns a subset of books based on limit and offset' do
+      get '/api/v1/books', params: {limit: 1, offset: 1}
+
+      expect(response).to have_http_status(:success)
+      expect(response_body.size).to eq(1)
+      expect(response_body).to eq([
+        {
+          "id" => 2,
+          "title" => 'A Story of the Noseless Person',
+          "author_name" => 'Tom The Cat',
+          "author_initials" => 'T.T',
+          "author_age" => 122
+        }
+      ])
     end
   end
 
