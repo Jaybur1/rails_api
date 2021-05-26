@@ -12,7 +12,7 @@ describe "Books API", type: :request do
         get '/api/v1/books'
 
         expect(response).to have_http_status(:success)
-        expect(JSON.parse(response.body).size).to eq(2)
+        expect(response_body.size).to eq(2)
     end
   end
 
@@ -26,7 +26,15 @@ describe "Books API", type: :request do
       }.to change { Book.count }.from(0).to(1)
 
       expect(response).to have_http_status(:created)
-      expect(JSON.parse(response.body)['title']).to eq('The Guy Who Made My School Years a Nigthmare')
+      expect(response_body).to eq(
+        {
+          "id" => 1,
+          "title" => 'The Guy Who Made My School Years a Nigthmare',
+          "author_name" => 'Harry Potter',
+          "author_initials" => "H.P",
+          "author_age" => 14
+        }
+      )
       expect(Author.count).to eq(1)
     end
   end
