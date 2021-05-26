@@ -1,7 +1,9 @@
 module Api
   module V1
     class BooksController < ApplicationController
+      include ActionController::HttpAuthentication::Token
       MAX_PAGINATION_LIMIT = 100
+      before_action :authenticate, only: [:create, :destroy]
       def index
         books = Book.limit(limit).offset(params[:offset])
         render json: BooksRepresenter.new(books).as_json
@@ -23,6 +25,14 @@ module Api
         head :no_content
       end
       private
+      def authenticate
+        # Authorization: Bearer <token>
+        token, _options = token_and_options(request)
+        user_id = AuthenticationTokenService.decode(token)
+        User.find(user_id)
+      rescue ActiveRecord::RecordNotFound
+        head :unauthorized
+      end
 
       def limit
         [params.fetch(:limit, MAX_PAGINATION_LIMIT).to_i, MAX_PAGINATION_LIMIT].min
